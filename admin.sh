@@ -32,7 +32,7 @@ if [[ -z ${IMAGE:-} ]]; then
   # Sem o serviço (1ª instalação) o inspect falha e imprime uma linha vazia: por isso o tr e o teste.
   IMAGE=$(docker service inspect --format '{{.Spec.TaskTemplate.ContainerSpec.Image}}' "$SERVICE" 2>/dev/null \
     | tr -d '[:space:]' || true)
-  [[ -n $IMAGE ]] || IMAGE="${REGISTRY:-registry.example.com}/active-directory-api:${IMAGE_TAG:-0.4.0}"
+  [[ -n $IMAGE ]] || IMAGE="${REGISTRY:-ghcr.io/williamgsilva}/active-directory-api:${IMAGE_TAG:-latest}"
 fi
 
 args=(--rm -i --env-file "$ENV_FILE" --network "$NETWORK")

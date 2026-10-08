@@ -3,7 +3,7 @@ import logging
 import secrets
 import sys
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 
 logger = logging.getLogger(__name__)
 
@@ -20,8 +20,15 @@ def encrypt_value(plain_text: str, key: str) -> str:
 def decrypt_value(encrypted_text: str, key: str) -> str | None:
     try:
         return Fernet(key.encode()).decrypt(encrypted_text.encode()).decode()
-    except Exception as e:
-        logger.error(f"Erro ao descriptografar valor: {e}")
+    except InvalidToken:
+        # A exceção do Fernet não traz mensagem: explicar as causas comuns
+        logger.error(
+            "Não foi possível descriptografar um valor do .env: ele não foi criptografado com esta "
+            "APP_MASTER_KEY (ou ainda é um placeholder/texto puro). Gere com: python -m app.cli encrypt"
+        )
+        return None
+    except ValueError as e:
+        logger.error(f"APP_MASTER_KEY inválida: {e}")
         return None
 
 

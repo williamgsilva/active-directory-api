@@ -4,7 +4,7 @@ version: "3.9"
 
 services:
   api:
-    image: ${REGISTRY:-registry.example.com}/active-directory-api:${IMAGE_TAG:-0.4.0}
+    image: ${REGISTRY:-ghcr.io/williamgsilva}/active-directory-api:${IMAGE_TAG:-latest}
     deploy:
       mode: replicated
       replicas: 1

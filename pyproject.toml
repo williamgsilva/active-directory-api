@@ -3,6 +3,8 @@ name = "active-directory-api"
 version = "0.4.0"
 description = "API central de autenticação e autorização no Active Directory (on-premises) para aplicações internas"
 readme = "README.md"
+license = "MIT"
+authors = [{ name = "William Gonçalves da Silva" }]
 requires-python = "3.13.*"
 dependencies = [
     "fastapi (>=0.115.0,<1.0.0)",
@@ -15,6 +17,9 @@ dependencies = [
     "psycopg2-binary (>=2.9.10,<3.0.0)",
     "alembic (>=1.15.0,<2.0.0)",
 ]
+
+[project.urls]
+Repository = "https://github.com/williamgsilva/active-directory-api"
 
 [tool.poetry]
 package-mode = false
