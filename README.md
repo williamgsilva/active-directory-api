@@ -27,20 +27,20 @@ que este projeto corrige de propósito (ver [Decisões de projeto](#decisões-de
 
 ## Destaques
 
-- **Login por usuário ou e-mail** — `nome.sobrenome`, `DOMINIO\nome.sobrenome` ou o e-mail cadastrado no
+- **Login por usuário ou e-mail**: `nome.sobrenome`, `DOMINIO\nome.sobrenome` ou o e-mail cadastrado no
   atributo `mail` do AD. Nenhum domínio fica fixo no código.
-- **JWT RS256 + JWKS** — as aplicações validam o token localmente em `/.well-known/jwks.json`.
-- **Dois níveis de acesso por aplicação** — `basic` (só login, e-mail e status) ou `full` (dados completos,
+- **JWT RS256 + JWKS**: as aplicações validam o token localmente em `/.well-known/jwks.json`.
+- **Dois níveis de acesso por aplicação**: `basic` (só login, e-mail e status) ou `full` (dados completos,
   grupos, introspecção, autorização e consultas ao diretório).
-- **Regras por aplicação** — prefixos de grupo que vão para o token, grupos obrigatórios para entrar,
+- **Regras por aplicação**: prefixos de grupo que vão para o token, grupos obrigatórios para entrar,
   audiência (`aud`) própria: um token de uma aplicação não vale em outra.
-- **Tudo no PostgreSQL** — aplicações e chaves de assinatura; mudanças valem **na hora, sem restart**.
-- **Troca de chave sem derrubar ninguém** — a chave antiga continua validando os tokens já emitidos até
+- **Tudo no PostgreSQL**: aplicações e chaves de assinatura; mudanças valem **na hora, sem restart**.
+- **Troca de chave sem derrubar ninguém**: a chave antiga continua validando os tokens já emitidos até
   eles expirarem.
-- **Documentação protegida** — `/docs` e `/redoc` exigem usuário e senha por aplicação; aplicações `basic`
+- **Documentação protegida**: `/docs` e `/redoc` exigem usuário e senha por aplicação; aplicações `basic`
   só enxergam os endpoints básicos.
-- **CLI de administração** — cadastro, edição, troca de API key e de chave JWT, sem mexer em arquivo.
-- **Pronta para Docker Swarm** — bootstrap automático do banco, rolling update sem downtime.
+- **CLI de administração**: cadastro, edição, troca de API key e de chave JWT, sem mexer em arquivo.
+- **Pronta para Docker Swarm**: bootstrap automático do banco, rolling update sem downtime.
 
 ## Como funciona
 
@@ -241,8 +241,8 @@ docker-compose.local.yml · docker-project.yml · admin.sh · start.sh · stop.s
 Sendo honesto sobre o que esta API **não** faz:
 
 - **As aplicações recebem a senha do usuário** e a repassam para a API (o padrão "formulário de login
-  próprio"). Para SSO, MFA e login sem expor senha às aplicações, o caminho é um provedor OIDC — um
-  Keycloak federado ao AD, por exemplo. Esta API resolve bem o cenário de aplicações internas simples.
+  próprio"). Para SSO, MFA e login sem expor senha às aplicações, o caminho é um provedor OIDC, como um
+  Keycloak federado ao AD. Esta API resolve bem o cenário de aplicações internas simples.
 - **Sem rate limit próprio**: o bloqueio por tentativas fica a cargo da política de lockout do AD.
 - **Use LDAPS (`AD_SSL=true`) em produção**: sem TLS, a senha trafega em texto até o AD.
 - Ideias: rate limit por aplicação, log de auditoria em tabela, endpoint de logout/revogação, manifests
