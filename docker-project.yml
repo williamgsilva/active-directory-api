@@ -1,0 +1,43 @@
+# Stack do Swarm: ./start.sh (docker stack deploy) e ./stop.sh (docker stack rm).
+# Configuração no variables.env; aplicações clientes e chave JWT no PostgreSQL (DATABASE_*).
+version: "3.9"
+
+services:
+  api:
+    image: ${REGISTRY:-registry.example.com}/active-directory-api:${IMAGE_TAG:-0.4.0}
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        # Sobe a task nova (e espera o healthcheck) antes de parar a antiga: atualizar não derruba o serviço
+        order: start-first
+        failure_action: rollback
+      # Opcional: fixar o serviço em um nó com label
+      # placement:
+      #   constraints:
+      #     - "node.labels.<label>==<valor>"
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 10s
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1024M
+    # AD_*, DATABASE_*, APP_MASTER_KEY, JWT_*... Lido no manager durante o deploy:
+    # alterou? rode ./start.sh de novo
+    env_file:
+      - variables.env
+    ports:
+      - ${APP_PORT:-8282}:8000
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
+    # Rede overlay já existente no cluster
+    name: ${SWARM_NETWORK:-backend}

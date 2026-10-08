@@ -1,0 +1,49 @@
+# Ambiente local: API + PostgreSQL. Em produção (Swarm) veja docker-project.yml.
+#   docker compose -f docker-compose.local.yml up -d --build
+#   docker compose -f docker-compose.local.yml run --rm api python -m app.cli    # administração
+services:
+  api:
+    image: active-directory-api:latest
+    build:
+      context: .
+    hostname: active-directory-api
+    restart: always
+    # Mesmo papel do variables.env em produção (AD, APP_MASTER_KEY, JWT...)
+    env_file:
+      - config/app.env
+    environment:
+      # Aponta para o Postgres abaixo (sobrepõe as DATABASE_* do app.env)
+      DATABASE_URL: postgresql+psycopg2://active_directory_api:${POSTGRES_PASSWORD:-change-me-local}@postgres:5432/active_directory_api
+      DATABASE_SCHEMA: active_directory_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - ${APP_PORT:-8282}:8000
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
+
+  postgres:
+    image: postgres:17-alpine
+    hostname: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: active_directory_api
+      POSTGRES_USER: active_directory_api
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local}
+    ports:
+      # Para inspecionar com psql/DBeaver: localhost:15432
+      - ${PG_PORT:-15432}:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U active_directory_api -d active_directory_api"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:

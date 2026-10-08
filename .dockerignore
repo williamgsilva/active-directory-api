@@ -1,0 +1,7 @@
+.venv
+__pycache__
+.pytest_cache
+.git
+tests
+# config/ entra por volume, nunca dentro da imagem
+config

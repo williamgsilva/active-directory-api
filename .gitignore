@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+.pytest_cache/
+# Configuração real do ambiente (segredos) - versionar só os *.example
+config/app.env
+# Obsoletos (antes do banco): clients.json e chave em arquivo
+config/clients.json
+config/clients.json.bak
+config/keys/
+config/certs/*
+!config/**/.gitkeep
+
+# Produção
+variables.env
